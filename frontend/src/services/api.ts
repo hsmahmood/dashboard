@@ -875,12 +875,132 @@ class ApiService {
   }>> {
     const params = new URLSearchParams();
     if (companyId) params.append('company_id', companyId.toString());
-    
+
     const queryString = params.toString();
     const url = `/charts/dashboard${queryString ? `?${queryString}` : ''}`;
-    
+
     return this.makeRequest(url, {
       method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  async getDashboards(token: string, includeShared: boolean = true): Promise<ApiResponse<any>> {
+    return this.makeRequest(`/dashboards?include_shared=${includeShared}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  async getDashboard(dashboardId: number, token: string): Promise<ApiResponse<any>> {
+    return this.makeRequest(`/dashboards/${dashboardId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  async createDashboard(dashboardData: any, token: string): Promise<ApiResponse<any>> {
+    return this.makeRequest('/dashboards', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(dashboardData),
+    });
+  }
+
+  async updateDashboard(dashboardId: number, updateData: any, token: string): Promise<ApiResponse<any>> {
+    return this.makeRequest(`/dashboards/${dashboardId}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updateData),
+    });
+  }
+
+  async deleteDashboard(dashboardId: number, token: string): Promise<ApiResponse<any>> {
+    return this.makeRequest(`/dashboards/${dashboardId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  async getWidgetTypes(token: string): Promise<ApiResponse<any>> {
+    return this.makeRequest('/widget-types', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  async getWidgetDefinitions(token: string, filters?: any): Promise<ApiResponse<any>> {
+    const params = new URLSearchParams();
+    if (filters?.widget_type_id) params.append('widget_type_id', filters.widget_type_id.toString());
+    if (filters?.my_widgets) params.append('my_widgets', 'true');
+
+    const queryString = params.toString();
+    const url = `/widget-definitions${queryString ? `?${queryString}` : ''}`;
+
+    return this.makeRequest(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  async getDashboardLayouts(dashboardId: number, token: string): Promise<ApiResponse<any>> {
+    return this.makeRequest(`/dashboard-layouts/dashboard/${dashboardId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  async addWidgetToDashboard(layoutData: any, token: string): Promise<ApiResponse<any>> {
+    return this.makeRequest('/dashboard-layouts', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(layoutData),
+    });
+  }
+
+  async updateDashboardLayout(layoutId: number, updateData: any, token: string): Promise<ApiResponse<any>> {
+    return this.makeRequest(`/dashboard-layouts/${layoutId}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updateData),
+    });
+  }
+
+  async bulkUpdateDashboardLayouts(dashboardId: number, layouts: any[], token: string): Promise<ApiResponse<any>> {
+    return this.makeRequest(`/dashboard-layouts/dashboard/${dashboardId}/bulk`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ layouts }),
+    });
+  }
+
+  async removeWidgetFromDashboard(layoutId: number, token: string): Promise<ApiResponse<any>> {
+    return this.makeRequest(`/dashboard-layouts/${layoutId}`, {
+      method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`,
       },

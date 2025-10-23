@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTheme } from '../../hooks/useTheme';
 import SidebarDrawer from '../Shared/SidebarDrawer';
 import DashboardContent from './DashboardContent';
+import NewDashboardContent from './NewDashboardContent';
 import DevicesPage from './DevicesPage';
 import AlarmsTable from './AlarmsTable';
 import { Device, HierarchyNode } from '../../services/api';
@@ -14,6 +15,7 @@ const DashboardLayout: React.FC = () => {
   const [selectedHierarchy, setSelectedHierarchy] =
     useState<HierarchyNode | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [useDynamicDashboard, setUseDynamicDashboard] = useState(true);
 
   const handleDeviceSelect = (device: Device) => {
     setSelectedDevice(device);
@@ -80,10 +82,17 @@ const DashboardLayout: React.FC = () => {
         <div className="flex-1 md:p-4 md:ml-0">
           {/* Main Tab Content */}
           {activeTab === 'Dashboard' && (
-            <DashboardContent
-              selectedDevice={selectedDevice}
-              selectedHierarchy={selectedHierarchy}
-            />
+            useDynamicDashboard ? (
+              <NewDashboardContent
+                selectedDevice={selectedDevice}
+                selectedHierarchy={selectedHierarchy}
+              />
+            ) : (
+              <DashboardContent
+                selectedDevice={selectedDevice}
+                selectedHierarchy={selectedHierarchy}
+              />
+            )
           )}
 
           {activeTab === 'Devices' && (
